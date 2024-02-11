@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Register User</h2>
+
+    <form style="width:60%" action="" method="POST">
+        {% csrf_token %}
+        <div class="">
+        {{form}}
+        </div>
+        
+
+        <button class="btn btn-success my-3" type="submit">Submit</button>
+    </form>
+    <div class="d-flex">
+        <h5>Already have an account?</h5>
+        <a class="mx-3 fs-5" href="{% url "login" %}">Login</a>
+    </div>
+
+</div>
+
+
+{% endblock content %}
+

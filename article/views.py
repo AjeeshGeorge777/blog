@@ -1,6 +1,12 @@
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import ArticleForm
+from django.contrib.auth.decorators import login_required 
+
+from django.views.generic.edit import   UpdateView , DeleteView
+from django.urls import reverse_lazy
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 
@@ -11,14 +17,31 @@ def categories(request):
     return {
         'categories' : categories,
     }
+def search_article(request):
+    if 'query' in request.GET:
+        query=request.GET['query']
+        articles=Article.objects.filter(title__icontains=query) | Article.objects.filter(content__icontains=query)
 
+    context ={
+        'articles': articles,
+        'query': query,
+
+        }
+    return render(request,'article/categorised_article.html',context)
 
 
 
 def index(request):
     all_articles=Article.objects.all()
+    paginator=Paginator(all_articles,4) # Show 25 contacts per page.
+    page_num=request.GET.get('page')
+    page_obj = paginator.get_page(page_num)
+    recent_articles = Article.objects.all().order_by('-pub_date')[:3]
     context={
-        'articles':all_articles
+        #'articles':all_articles,
+        'page_obj':page_obj,
+        
+        'recent_articles':recent_articles,
 
     }
     return render(request,'article/index.html',context)
@@ -54,7 +77,7 @@ def categorised_article(request, pk):
      }
     return render(request,'article/categorised_article.html',context)
 
-
+@login_required
 def post_article(request):
 
     form =ArticleForm()
@@ -62,7 +85,9 @@ def post_article(request):
     if request.method =="POST":
         form =ArticleForm(request.POST,request.FILES)
         if form.is_valid():
-            form.save()
+            article=form.save(commit=False)
+            article.author=request.user
+            article.save()
             return redirect('article:single_article', pk=form.instance.id)
             
 
@@ -70,3 +95,17 @@ def post_article(request):
         'form':form
     }
     return render(request,'article/article_form.html',context)
+
+
+class UpdateArticle(UpdateView):
+    model=Article
+    #fields=["category","title","img","content"]
+    form_class=ArticleForm
+    template_name_suffix="_update"
+
+
+
+class DeleteArticle(DeleteView):
+    model=Article
+
+    success_url=reverse_lazy("profile")

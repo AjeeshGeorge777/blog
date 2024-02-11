@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'article.apps.ArticleConfig',
+
+    'users.apps.UsersConfig',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -119,7 +122,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [BASE_DIR /'static']
+STATICFILES_DIRS = [BASE_DIR /'static','static/css']
 
 MEDIA_URL ='/media/'
 
@@ -129,3 +132,15 @@ MEDIA_ROOT = 'static/media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL='article:index'
+
+LOGIN_URL ='login'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ajeeshgeorge777@gmail.com'  
+EMAIL_HOST_PASSWORD = 'jliibiusptictqss'     

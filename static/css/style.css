@@ -1,0 +1,7 @@
+.carousel-control-next,.carousel-control-prev{
+    height: fit-content;
+    width: fit-content;
+    position: absolute;
+    top: 350px;
+    background-color: black;
+}
